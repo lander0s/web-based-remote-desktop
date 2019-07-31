@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "jimp": "^0.6.4",
+    "robotjs": "^0.5.1",
     "screenshot-desktop": "^1.9.0"
   }
 }
