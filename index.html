@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Remote desktop in node.js</title>
+        <style>
+            #screen {
+                border: 5px solid gray;
+                position : absolute;
+                left     : 50%;
+                top      : 50%;
+            }
+        </style>
+    </head>
+    <body>
+      <canvas id='screen'></canvas>
+      <script>
+
+var RemoteDesktop = (function(){
+  var image = null;
+  var container = null;
+  function init() {
+    container = document.querySelector('#screen');
+    container.addEventListener('click', (e) => {
+        let rect = e.target.getBoundingClientRect();
+        let x = (e.clientX - rect.left) / image.width;
+        let y = (e.clientY - rect.top) / image.height;
+        document.body.style.backgroundImage = `url("/input?type=click&x=${x}&y=${y}#${new Date().getTime()}")`;
+    });
+    image = new Image();
+    updateImage();
+  }
+
+  function updateImage() {
+    image.src = './getScreen?scale=0.2#' + new Date().getTime();
+    image.onload = () => {
+       container.width = image.width;
+       container.height = image.height;
+       container.style.width = image.width + 'px';
+       container.style.height = image.height + 'px';
+       container.style.marginLeft = (-image.width / 2) + 'px';
+       container.style.marginTop = (-image.height / 2) + 'px';
+       container.getContext('2d').drawImage(image, 0, 0);
+       setTimeout(updateImage, 100);
+    }
+  }
+
+  return { init : init }
+})();
+RemoteDesktop.init();
+      </script>
+    </body>
+</html>

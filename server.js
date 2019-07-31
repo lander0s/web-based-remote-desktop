@@ -3,9 +3,7 @@ const screenshot = require('screenshot-desktop');
 const Jimp = require('jimp');
 const robot = require('robotjs');
 const url = require('url');
-
-//robot.moveMouse(100,100);
-//robot.mouseClick();
+const fs = require('fs');
 
 function getScreen(query, response) {
     screenshot({format:'png'}).then((originalBuffer)=>{
@@ -31,9 +29,14 @@ function input(query, response) {
 http.createServer((request, response)=>{
     let parsedUrl = url.parse(request.url, true);
     console.log(parsedUrl.pathname);
-    if(parsedUrl.pathname == '/getScreen') {
+    if(parsedUrl.pathname == '/' || parsedUrl.pathname == '/index.html') {
+        response.end(fs.readFileSync('./index.html'));
+    } else if(parsedUrl.pathname == '/getScreen') {
         getScreen(parsedUrl.query, response);
     } else if(parsedUrl.pathname == '/input') {
         input(parsedUrl.query, response);
+    } else {
+        response.writeHead(404);
+        response.end('not found');
     }
 }).listen(8080);
