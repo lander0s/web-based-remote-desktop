@@ -5,38 +5,53 @@ const robot = require('robotjs');
 const url = require('url');
 const fs = require('fs');
 
-function getScreen(query, response) {
-    screenshot({format:'png'}).then((originalBuffer)=>{
-        Jimp.read(originalBuffer).then((imageObj)=>{
-            imageObj.scale(parseFloat(query.scale) || 0.5).quality(parseInt(query.quality) || 60)
-              .getBufferAsync(Jimp.MIME_PNG).then((resultingBuffer) => {
-                  response.writeHead(200, { 'content-type' : 'image/png' });
-                  response.end(resultingBuffer);
-            });
-        });
+var routeControllers = [];
+var onRoute = (path, callback) => routeControllers[path] = callback;
+
+onRoute('/screen', (query, response) => {
+  screenshot({ format: 'png' })
+  .then((originalBuffer) => {
+    Jimp.read(originalBuffer)
+    .then((imageObj) => {
+      imageObj
+      .scale(parseFloat(query.scale) || 0.5)
+      .quality(parseInt(query.quality) || 60)
+      .getBufferAsync(Jimp.MIME_PNG).then((resultingBuffer) => {
+        response.writeHead(200, { 'content-type': 'image/png' });
+        response.end(resultingBuffer);
+      });
     });
-}
+  });
+});
 
-function input(query, response) {
-    if(query.type == 'click') {
-        const screenSize = robot.getScreenSize();
-        robot.moveMouse(query.x * screenSize.width, query.y * screenSize.height);
-        robot.mouseClick();
-    }
-    response.end('ok');
-}
+onRoute('/input', (query, response) => {
+  if (query.type == 'click') {
+    const screenSize = robot.getScreenSize();
+    const x = query.x * screenSize.width;
+    const y = query.y * screenSize.height;
+    robot.moveMouse(x, y);
+    robot.mouseClick();
+  }
+  response.end('ok');
+});
 
-http.createServer((request, response)=>{
-    let parsedUrl = url.parse(request.url, true);
-    console.log(parsedUrl.pathname);
-    if(parsedUrl.pathname == '/' || parsedUrl.pathname == '/index.html') {
-        response.end(fs.readFileSync('./index.html'));
-    } else if(parsedUrl.pathname == '/getScreen') {
-        getScreen(parsedUrl.query, response);
-    } else if(parsedUrl.pathname == '/input') {
-        input(parsedUrl.query, response);
-    } else {
-        response.writeHead(404);
-        response.end('not found');
-    }
+onRoute('/', (query, response) => {
+  response.end(fs.readFileSync('./client.html'));
+});
+
+onRoute('/client.js', (query, response) => {
+  response.end(fs.readFileSync('./client.js'));
+});
+
+onRoute('/client.css', (query, response) => {
+  response.end(fs.readFileSync('./client.css'));
+});
+
+http.createServer((request, response) => {
+  let _url = url.parse(request.url, true);
+  let callback = routeControllers[_url.pathname] || (()=>{
+    response.writeHead(404);
+    response.end('Not found');
+  });
+  callback(_url.query, response);
 }).listen(8080);
