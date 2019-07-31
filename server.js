@@ -7,7 +7,7 @@ http.createServer((request, response)=>{
         Jimp.read(originalBuffer).then((imageObj)=>{
             imageObj.scale(0.5).quality(60)
               .getBufferAsync(Jimp.MIME_PNG).then((resultingBuffer) => {
-                response.writeHead(200, {'content-type' : '	image/png'});
+                response.writeHead(200, {'content-type' : 'image/png'});
                 response.end(resultingBuffer);
             });
         });
