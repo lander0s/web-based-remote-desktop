@@ -36,14 +36,17 @@ onRoute('/input', (query, response) => {
 });
 
 onRoute('/', (query, response) => {
+  response.writeHead(200, { 'content-type': 'text/html' });
   response.end(fs.readFileSync('./client.html'));
 });
 
 onRoute('/client.js', (query, response) => {
+  response.writeHead(200, { 'content-type': 'text/javascript' });
   response.end(fs.readFileSync('./client.js'));
 });
 
 onRoute('/client.css', (query, response) => {
+  response.writeHead(200, { 'content-type': 'text/css' });
   response.end(fs.readFileSync('./client.css'));
 });
 
