@@ -1,0 +1,15 @@
+{
+  "name": "nodejsremotedesktop",
+  "version": "1.0.0",
+  "description": "remote desktop over http",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David Landeros",
+  "license": "ISC",
+  "dependencies": {
+    "jimp": "^0.6.4",
+    "screenshot-desktop": "^1.9.0"
+  }
+}
