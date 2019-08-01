@@ -1,25 +1,10 @@
 
 const UI = (() =>{
 
-  var sidebarWidth = 300;
-  var mainContainer = null;
-  var mainContainerWidth = -1;
-  var mainContainerHeight = -1;
-  var mainContainerMargin = 50;
-
   function init() {
-    mainContainer = document.querySelector('.main-container');
-    resize();
-    window.addEventListener('resize', resize);
   }
 
   function resize() {
-    mainContainerWidth = (window.innerWidth - sidebarWidth) - (mainContainerMargin * 2);
-    mainContainerHeight = (window.innerHeight) - (mainContainerMargin * 2);
-    mainContainer.style.width = `${mainContainerWidth}px`;
-    mainContainer.style.height = `${mainContainerHeight}px`;
-    mainContainer.style.marginLeft = `${mainContainerMargin}px`;
-    mainContainer.style.marginTop = `${mainContainerMargin}px`;
   }
 
   return { init : init };

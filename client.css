@@ -1,36 +1,30 @@
-body, html {
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
+
+.topbar {
+  height: 60px;
+  background-color: black;
+  line-height: 60px;
+  padding-right: 10px;
+  text-align: right;
 }
 
-.sidebar {
-  text-align: center;
-  background-color: #1b1c1d;
-  width : 300px;
-  height: 100%;
-  float: left;
+.glyphicon-fullscreen {
+  background-image: url(./fullscreen.png);
+  background-size : cover;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
 }
 
-.sidebar-content {
-    width: 300px;
-    height: 500px;
-    position: absolute;
-    top: 50%;
-    margin-top: -250px;
-    border: 1px dotted silver;
+.glyphicon-hand {
+  background-image: url(./hand.png);
+  background-size : cover;
+  display: inline-block;
+  height: 20px;
+  height: 20px;
 }
 
-.main-container {
-  text-align: center;
-  background-color: pink;
-  float: left;
-}
-
-.ui.header {
-    color : white;
-}
-
-.ui.header .sub.header {
-    color : white;
+label {
+  color: white;
+  font-weight: bold;
+  margin-right: 10px;
 }
