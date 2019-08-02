@@ -5,10 +5,16 @@ const robot = require('robotjs');
 const url = require('url');
 const fs = require('fs');
 
-var fileExtRegExp = RegExp(".([a-zA-Z0-9])+$");
-var staticFilePathsRegExp = new RegExp("^([A-Za-z0-9/]+)((.)([A-Za-z0-9]+))+$");
+const fileExtRegExp = RegExp(".([a-zA-Z0-9])+$");
+const staticFilePathsRegExp = new RegExp("^([A-Za-z0-9/]+)((.)([A-Za-z0-9]+))+$");
+var mimeTypes = {
+  '.css': 'text/css',
+  '.js': 'text/javascript',
+  '.png': 'image/png'
+};
+
 var routeControllers = [];
-var onRoute = (path, callback) => routeControllers[path] = callback;
+const onRoute = (path, callback) => routeControllers[path] = callback;
 
 onRoute('/screen', (query, response) => {
   screenshot({ format: 'png' })
@@ -38,17 +44,8 @@ onRoute('/input', (query, response) => {
 });
 
 function getMimeType(filename) {
-  let ext = fileExtRegExp.exec(filename)[0];
-  if (ext === ".css") {
-    return "text/css";
-  }
-  if (ext === ".js") {
-    return "text/javascript";
-  }
-  if (ext === ".png") {
-    return "image/png";
-  }
-  return "text/html";
+  let ext = (fileExtRegExp.exec(filename) || [""])[0];
+  return mimeTypes[ext] || "text/html";
 }
 
 http.createServer((request, response) => {
