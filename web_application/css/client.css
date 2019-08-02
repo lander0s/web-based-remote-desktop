@@ -8,7 +8,7 @@
 }
 
 .glyphicon-fullscreen {
-  background-image: url(./fullscreen.png);
+  background-image: url(../img/fullscreen.png);
   background-size : cover;
   display: inline-block;
   width: 15px;
@@ -16,14 +16,22 @@
 }
 
 .glyphicon-hand {
-  background-image: url(./hand.png);
+  background-image: url(../img/hand.png);
   background-size : cover;
   display: inline-block;
-  height: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
 }
 
-label {
+.glyphicon-more {
+  background-image: url(../img/more.png);
+  background-size : cover;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+}
+
+.computer-name {
   color: white;
   font-weight: bold;
   margin-right: 10px;
