@@ -1,34 +1,63 @@
 
-Toolbar.init();
+const fakeImage = {
+  width: 1280,
+  height: 720,
+}
 
 var RemoteDesktop = (function () {
-  var image = null;
+  const topBarHeight = 60;
+  var screenImg = null;
   var canvas = null;
+  var containerSize = {
+    width: 0,
+    height: 0
+  };
+  var canvasSize = {
+    width: 0,
+    height: 0    
+  }
+
   function init() {
-    canvas = document.querySelector('#screen');
-    canvas.addEventListener('click', (e) => {
-      let rect = e.target.getBoundingClientRect();
-      let x = (e.clientX - rect.left) / rect.width;
-      let y = (e.clientY - rect.top) / rect.height;
-      document.body.style.backgroundImage = `url("/input?type=click&x=${x}&y=${y}#${new Date().getTime()}")`;
-    });
-    image = new Image();
+    Toolbar.init();
+    screenImg = new Image();
+    canvas = document.createElement('canvas');
+    document.body.appendChild(canvas);
     updateImage();
+    window.addEventListener('resize', resize);
+  }
+
+  function resize() {
+    containerSize.height = window.innerHeight - topBarHeight;
+    containerSize.width = window.innerWidth;
+    let ratio = fakeImage.height / fakeImage.width;
+    canvasSize.width = containerSize.width;
+    canvasSize.height = containerSize.width * ratio;
+    if(canvasSize.height > containerSize.height) {
+      canvasSize.height = containerSize.height;
+      canvasSize.width = containerSize.height / ratio;
+    }
+    updateCanvasStyle();
+  }
+
+  function updateCanvasStyle() {
+    canvas.style.position = 'absolute';
+    canvas.style.zIndex = "-10";
+    canvas.style.backgroundColor = 'pink';
+    canvas.style.width = `${canvasSize.width}px`;
+    canvas.style.height = `${canvasSize.height}px`;
+    canvas.style.left = "50%";
+    canvas.style.top = `${(topBarHeight + (containerSize.height/2) - (canvasSize.height/2))}px`;
+    canvas.style.marginLeft = `${-canvasSize.width/2}px`;
   }
 
   function updateImage() {
-    image.src = './screen?scale=0.25&time=' + new Date().getTime();
-    image.onload = () => {
-      canvas.width = image.width;
-      canvas.height = image.height;
-      canvas.style.width = image.width + 'px';
-      canvas.style.height = image.height + 'px';
-      canvas.style.marginLeft = (-image.width / 2) + 'px';
-      canvas.style.marginTop = (-image.height / 2) + 'px';
-      canvas.getContext('2d').drawImage(image, 0, 0);
-      setTimeout(updateImage, 100);
-    }
+    // on image loaded
+    canvas.width = fakeImage.width;
+    canvas.width = fakeImage.height;
+    resize();
   }
 
   return { init: init }
 })();
+
+RemoteDesktop.init();
