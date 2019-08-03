@@ -9,9 +9,9 @@ const Toolbar = (() => {
     var keyCombinationElements = document.querySelectorAll('.key-combination-option');
     resOptionElements.forEach((elem) => {
       elem.addEventListener('click', (e) => {
-        resolutionButton.innerHTML = e.target.innerHTML;
+        resolutionButton.innerHTML = `Quality: ${e.target.innerHTML}`;
         eventCallbacks[Events.resolutionChanged].forEach((callback) => {
-          callback(e.target.innerHTML);
+          callback(e.target.dataset.scale);
         });
       });
     });
@@ -28,5 +28,5 @@ const Toolbar = (() => {
     eventCallbacks[event].push(callback);
   }
 
-  return { init: init, on: on };
+  return { init: init, on: on, Events : Events };
 })();

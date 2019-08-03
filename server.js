@@ -23,7 +23,7 @@ onRoute('/screen', (query, response) => {
         .then((imageObj) => {
           imageObj
             .scale(parseFloat(query.scale) || 0.5)
-            .quality(parseInt(query.quality) || 60)
+            .quality(parseInt(query.quality) || 01)
             .getBufferAsync(Jimp.MIME_PNG).then((resultingBuffer) => {
               response.writeHead(200, { 'content-type': 'image/png' });
               response.end(resultingBuffer);

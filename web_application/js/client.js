@@ -1,17 +1,15 @@
 
-const fakeImage = {
-  width: 1280,
-  height: 720,
-}
-
 var RemoteDesktop = (function () {
   const topBarHeight = 60;
   var screenImg = null;
   var canvas = null;
+  var imageScale = "1.0";
+
   var containerSize = {
     width: 0,
     height: 0
   };
+
   var canvasSize = {
     width: 0,
     height: 0    
@@ -22,14 +20,18 @@ var RemoteDesktop = (function () {
     screenImg = new Image();
     canvas = document.createElement('canvas');
     document.body.appendChild(canvas);
-    updateImage();
     window.addEventListener('resize', resize);
+    updateImage();
+    Toolbar.on(Toolbar.Events.resolutionChanged, (value) =>{
+      imageScale = value;
+      console.log('resolution changed');
+    });
   }
 
   function resize() {
     containerSize.height = window.innerHeight - topBarHeight;
     containerSize.width = window.innerWidth;
-    let ratio = fakeImage.height / fakeImage.width;
+    let ratio = screenImg.height / screenImg.width;
     canvasSize.width = containerSize.width;
     canvasSize.height = containerSize.width * ratio;
     if(canvasSize.height > containerSize.height) {
@@ -41,7 +43,6 @@ var RemoteDesktop = (function () {
 
   function updateCanvasStyle() {
     canvas.style.position = 'absolute';
-    canvas.style.zIndex = "-10";
     canvas.style.backgroundColor = 'pink';
     canvas.style.width = `${canvasSize.width}px`;
     canvas.style.height = `${canvasSize.height}px`;
@@ -51,10 +52,16 @@ var RemoteDesktop = (function () {
   }
 
   function updateImage() {
-    // on image loaded
-    canvas.width = fakeImage.width;
-    canvas.width = fakeImage.height;
-    resize();
+    screenImg.src = `./screen?scale=${imageScale}&time=${new Date().getTime()}`;
+    screenImg.onload = () => {
+      canvas.width = screenImg.width;
+      canvas.height = screenImg.height;
+      resize();
+      let ctx = canvas.getContext('2d');
+      ctx.drawImage(screenImg, 0,0, canvas.width, canvas.height);
+      //setTimeout(updateImage, 10);
+      updateImage();
+    };
   }
 
   return { init: init }
