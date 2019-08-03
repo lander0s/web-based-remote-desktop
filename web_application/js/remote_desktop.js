@@ -11,9 +11,9 @@ var RemoteDesktop = (function () {
   function init() {
     screenImg = new Image();
     canvas = document.createElement('canvas');
-    document.body.appendChild(canvas);
-    window.addEventListener('resize', resize);
-    canvas.addEventListener('click', click);
+    $('body').append(canvas);
+    $(window).resize(resize);
+    $(canvas).click(click);
     updateImage();
   }
 
@@ -31,9 +31,9 @@ var RemoteDesktop = (function () {
   }
 
   function click(e) {
-    var rect = e.target.getBoundingClientRect();
-    var x = (e.clientX - rect.left) / canvasSize.width;
-    var y = (e.clientY - rect.top) / canvasSize.height;
+    var elm = $(this);
+    var x = (e.pageX - elm.offset().left) / canvasSize.width;
+    var y = (e.pageY - elm.offset().top) / canvasSize.height;
     $.get( `/input?type=click&x=${x}&y=${y}`, function( _ ) {});
   }
 
