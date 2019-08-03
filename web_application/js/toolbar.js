@@ -4,38 +4,29 @@ const Toolbar = (() => {
 
   function init() {
 
-    eventCallbacks["scaleChanged"] = [];
-    eventCallbacks["keyCombination"] = [];
+    eventCallbacks["scaleChanged"] = () => { };
+    eventCallbacks["keyCombination"] = () => { };
 
-    var resolutionButton = document.querySelector('#resolution-button');
-    var resOptionElements = document.querySelectorAll('.resolution-option');
-    var keyCombinationElements = document.querySelectorAll('.key-combination-option');
-    resOptionElements.forEach((elem) => {
-      elem.addEventListener('click', (e) => {
-        resolutionButton.innerHTML = `Quality: ${e.target.innerHTML}`;
-        eventCallbacks["scaleChanged"].forEach((callback) => {
-          callback(e.target.dataset.scale);
-        });
-      });
+    $('.resolution-option').click( (e) => {
+      $('#resolution-button').html(`Quality: ${$(e.target).html()}`);
+      eventCallbacks["scaleChanged"](e.target.dataset.scale);
     });
-    keyCombinationElements.forEach((elem) => {
-      elem.addEventListener('click', (e) => {
-        eventCallbacks["keyCombination"].forEach((callback) => {
-          callback(e.target.innerHTML);
-        });
-      });
+
+    $('.key-combination-option').click( (e)=> {
+      eventCallbacks["keyCombination"](e.target.innerHTML);
     });
 
     $('.topbar').mouseenter(()=>{
       $('.topbar').css('top', '0px');
     });
+
     $('.topbar').mouseleave(()=>{
       $('.topbar').css('top','-60px');
     });
   }
 
   function on(event, callback) {
-    eventCallbacks[event].push(callback);
+    eventCallbacks[event] = callback;
   }
 
   return { init: init, on: on };

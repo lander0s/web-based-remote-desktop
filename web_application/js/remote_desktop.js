@@ -1,11 +1,9 @@
 
-var RemoteDesktop = (function () {
+var RemoteDesktop = (() => {
 
-  const topBarHeight = 0;
   var screenImg = null;
   var canvas = null;
   var imageScale = "1.0";
-  var containerSize = { width: 0, height: 0 };
   var canvasSize = { width: 0, height: 0 };
 
   function init() {
@@ -18,22 +16,20 @@ var RemoteDesktop = (function () {
   }
 
   function resize() {
-    containerSize.height = window.innerHeight - topBarHeight;
-    containerSize.width = window.innerWidth;
     let ratio = screenImg.height / screenImg.width;
-    canvasSize.width = containerSize.width;
-    canvasSize.height = containerSize.width * ratio;
-    if (canvasSize.height > containerSize.height) {
-      canvasSize.height = containerSize.height;
-      canvasSize.width = containerSize.height / ratio;
+    canvasSize.width = window.innerWidth;
+    canvasSize.height = window.innerWidth * ratio;
+    if (canvasSize.height > window.innerHeight) {
+      canvasSize.height = window.innerHeight;
+      canvasSize.width = window.innerHeight / ratio;
     }
     updateCanvasStyle();
   }
 
   function click(e) {
-    var elm = $(this);
-    var x = (e.pageX - elm.offset().left) / canvasSize.width;
-    var y = (e.pageY - elm.offset().top) / canvasSize.height;
+    let offset = $(this).offset();
+    let x = (e.pageX - offset.left) / canvasSize.width;
+    let y = (e.pageY - offset.top) / canvasSize.height;
     $.get( `/input?type=click&x=${x}&y=${y}`, function( _ ) {});
   }
 
@@ -42,13 +38,13 @@ var RemoteDesktop = (function () {
   }
 
   function updateCanvasStyle() {
-    canvas.style.position = 'absolute';
-    canvas.style.backgroundColor = 'pink';
-    canvas.style.width = `${canvasSize.width}px`;
-    canvas.style.height = `${canvasSize.height}px`;
-    canvas.style.left = "50%";
-    canvas.style.top = `${(topBarHeight + (containerSize.height / 2) - (canvasSize.height / 2))}px`;
-    canvas.style.marginLeft = `${-canvasSize.width / 2}px`;
+    $(canvas).css('position','absolute');
+    $(canvas).css('background-color','pink');
+    $(canvas).css('left','50%');
+    $(canvas).css('width',`${canvasSize.width}px`);
+    $(canvas).css('height',`${canvasSize.height}px`);
+    $(canvas).css('top',`${(window.innerHeight / 2) - (canvasSize.height / 2)}px`);
+    $(canvas).css('margin-left', `${-canvasSize.width / 2}px`);
   }
 
   function updateImage() {
