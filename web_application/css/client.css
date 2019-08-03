@@ -35,6 +35,14 @@
   height: 15px;
 }
 
+.glyphicon-crop {
+  background-image: url(../img/crop.png);
+  background-size : cover;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+}
+
 .computer-name {
   color: white;
   font-weight: bold;
