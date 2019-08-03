@@ -1,7 +1,7 @@
 
 var RemoteDesktop = (function () {
 
-  const topBarHeight = 60;
+  const topBarHeight = 0;
   var screenImg = null;
   var canvas = null;
   var imageScale = "1.0";
@@ -11,7 +11,7 @@ var RemoteDesktop = (function () {
   function init() {
     screenImg = new Image();
     canvas = document.createElement('canvas');
-    $('body').append(canvas);
+    $('body').prepend(canvas);
     $(window).resize(resize);
     $(canvas).click(click);
     updateImage();

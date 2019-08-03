@@ -25,6 +25,13 @@ const Toolbar = (() => {
         });
       });
     });
+
+    $('.topbar').mouseenter(()=>{
+      $('.topbar').css('top', '0px');
+    });
+    $('.topbar').mouseleave(()=>{
+      $('.topbar').css('top','-60px');
+    });
   }
 
   function on(event, callback) {
