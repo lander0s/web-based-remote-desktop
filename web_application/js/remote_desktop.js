@@ -1,31 +1,20 @@
 
 var RemoteDesktop = (function () {
+
   const topBarHeight = 60;
   var screenImg = null;
   var canvas = null;
   var imageScale = "1.0";
-
-  var containerSize = {
-    width: 0,
-    height: 0
-  };
-
-  var canvasSize = {
-    width: 0,
-    height: 0    
-  }
+  var containerSize = { width: 0, height: 0 };
+  var canvasSize = { width: 0, height: 0 };
 
   function init() {
-    Toolbar.init();
     screenImg = new Image();
     canvas = document.createElement('canvas');
     document.body.appendChild(canvas);
     window.addEventListener('resize', resize);
+    canvas.addEventListener('click', click);
     updateImage();
-    Toolbar.on(Toolbar.Events.resolutionChanged, (value) =>{
-      imageScale = value;
-      console.log('resolution changed');
-    });
   }
 
   function resize() {
@@ -34,11 +23,22 @@ var RemoteDesktop = (function () {
     let ratio = screenImg.height / screenImg.width;
     canvasSize.width = containerSize.width;
     canvasSize.height = containerSize.width * ratio;
-    if(canvasSize.height > containerSize.height) {
+    if (canvasSize.height > containerSize.height) {
       canvasSize.height = containerSize.height;
       canvasSize.width = containerSize.height / ratio;
     }
     updateCanvasStyle();
+  }
+
+  function click(e) {
+    var rect = e.target.getBoundingClientRect();
+    var x = (e.clientX - rect.left) / canvasSize.width;
+    var y = (e.clientY - rect.top) / canvasSize.height;
+    $.get( `/input?type=click&x=${x}&y=${y}`, function( _ ) {});
+  }
+
+  function setImageScale(value) {
+    imageScale = value;
   }
 
   function updateCanvasStyle() {
@@ -47,8 +47,8 @@ var RemoteDesktop = (function () {
     canvas.style.width = `${canvasSize.width}px`;
     canvas.style.height = `${canvasSize.height}px`;
     canvas.style.left = "50%";
-    canvas.style.top = `${(topBarHeight + (containerSize.height/2) - (canvasSize.height/2))}px`;
-    canvas.style.marginLeft = `${-canvasSize.width/2}px`;
+    canvas.style.top = `${(topBarHeight + (containerSize.height / 2) - (canvasSize.height / 2))}px`;
+    canvas.style.marginLeft = `${-canvasSize.width / 2}px`;
   }
 
   function updateImage() {
@@ -58,13 +58,13 @@ var RemoteDesktop = (function () {
       canvas.height = screenImg.height;
       resize();
       let ctx = canvas.getContext('2d');
-      ctx.drawImage(screenImg, 0,0, canvas.width, canvas.height);
-      //setTimeout(updateImage, 10);
+      ctx.drawImage(screenImg, 0, 0, canvas.width, canvas.height);
       updateImage();
     };
   }
 
-  return { init: init }
+  return {
+    init: init,
+    setImageScale: setImageScale
+  };
 })();
-
-RemoteDesktop.init();
