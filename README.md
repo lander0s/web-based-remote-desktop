@@ -1,0 +1,1 @@
+On Linux we must install libxtst-dev to be able to install robotjs module
