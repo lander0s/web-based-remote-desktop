@@ -11,6 +11,8 @@
 <body>
   <div class="topbar">
     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+      <button id="info-button" title="show system information" type="button" class="btn btn-primary"><span
+        class="glyphicon glyphicon-info"></span></button>
       <div class="btn-group" role="group">
         <button title="set resolution" id="resolution-button" type="button" class="btn btn-primary dropdown-toggle"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -41,6 +43,27 @@
     </div>
   </div>
 
+<!-- Modal -->
+<div class="modal fade" id="generic-modal" tabindex="-1" role="dialog" aria-labelledby="generic-modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="generic-modal-long-title">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="generic-modal-body" class="modal-body">
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quasi veniam odio recusandae sequi, ab enim ipsam esse corrupti similique qui omnis amet. Sapiente natus sunt molestiae eius exercitationem sint suscipit.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
     integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"

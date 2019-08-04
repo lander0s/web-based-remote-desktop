@@ -45,6 +45,14 @@ body, html {
   height: 15px;
 }
 
+.glyphicon-info {
+  background-image: url(../img/info.png);
+  background-size : cover;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+}
+
 .computer-name {
   color: white;
   font-weight: bold;

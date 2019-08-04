@@ -4,6 +4,7 @@ const Jimp = require('jimp');
 const robot = require('robotjs');
 const url = require('url');
 const fs = require('fs');
+const os = require('os');
 
 const fileExtRegExp = RegExp(".([a-zA-Z0-9])+$");
 const staticFilePathsRegExp = new RegExp("^([A-Za-z0-9/]+)((.)([A-Za-z0-9]+))+$");
@@ -43,9 +44,31 @@ onRoute('/input', (query, response) => {
   response.end('ok');
 });
 
+onRoute('/info', (query, response) => {
+  response.writeHead(200, {'content-type' : 'application/json; charset=utf-8'});
+  response.end(JSON.stringify({
+    computerName : os.hostname(),
+    userName : os.userInfo().username,
+    osVersion : getOsVersion(),
+  }));
+});
+
 function getMimeType(filename) {
   let ext = (fileExtRegExp.exec(filename) || [""])[0];
   return mimeTypes[ext] || "text/html";
+}
+
+function getOsVersion() {
+  if(os.platform() === 'win32') {
+    return `Microsoft Windows ${os.release()}`;
+  }
+  if(os.platform() === 'linux') {
+    return `GNU/Linux ${os.release()}`;
+  }
+  if(os.platform() === 'darwin') {
+    return `MacOS ${os.release()}`;
+  }
+  return `${os.platform()} - ${os.release()}`;
 }
 
 http.createServer((request, response) => {
