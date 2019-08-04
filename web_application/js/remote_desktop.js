@@ -11,7 +11,9 @@ var RemoteDesktop = (() => {
     canvas = document.createElement('canvas');
     $('body').prepend(canvas);
     $(window).resize(resize);
-    $(canvas).click(click);
+    $(canvas).mousedown(mouseEvent);
+    $(canvas).mouseup(mouseEvent);
+    $(canvas).mousemove(mouseEvent);
     updateImage();
   }
 
@@ -26,11 +28,11 @@ var RemoteDesktop = (() => {
     updateCanvasStyle();
   }
 
-  function click(e) {
+  function mouseEvent(e) {
     let offset = $(this).offset();
     let x = (e.pageX - offset.left) / canvasSize.width;
     let y = (e.pageY - offset.top) / canvasSize.height;
-    $.get( `/input?type=click&x=${x}&y=${y}`, function( _ ) {});
+    $.get( `/mouse?type=${e.type}&x=${x}&y=${y}`, function( _ ) {});
   }
 
   function setImageScale(value) {

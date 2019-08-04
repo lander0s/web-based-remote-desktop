@@ -33,13 +33,13 @@ onRoute('/screen', (query, response) => {
     });
 });
 
-onRoute('/input', (query, response) => {
-  if (query.type == 'click') {
-    const screenSize = robot.getScreenSize();
-    const x = query.x * screenSize.width;
-    const y = query.y * screenSize.height;
-    robot.moveMouse(x, y);
-    robot.mouseClick();
+onRoute('/mouse', (query, response) => {
+  const screenSize = robot.getScreenSize();
+  const x = query.x * screenSize.width;
+  const y = query.y * screenSize.height;
+  robot.moveMouse(x, y);
+  if (query.type == 'mousedown' || query.type == 'mouseup') {
+    robot.mouseToggle(query.type.substring(5));
   }
   response.end('ok');
 });
