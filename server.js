@@ -1,9 +1,12 @@
 const express = require('express')
-const screenshot = require('screenshot-desktop');
-const Jimp = require('jimp');
 const robot = require('robotjs');
 const os = require('os');
-const server = express();
+const { createCanvas, ImageData } = require('canvas');
+
+const server     = express();
+const screenSize = robot.getScreenSize();
+const canvas     = createCanvas(screenSize.width, screenSize.height);
+const context    = canvas.getContext('2d');
 
 function getOsVersion() {
   if(os.platform() === 'win32') {
@@ -18,20 +21,19 @@ function getOsVersion() {
   return `${os.platform()} - ${os.release()}`;
 }
 
-server.get('/screen', (req , res )=>{
-  screenshot({ format: 'png' })
-    .then((originalBuffer) => {
-      Jimp.read(originalBuffer)
-        .then((imageObj) => {
-          imageObj
-            .scale(parseFloat(req.query.scale) || 0.5)
-            .quality(parseInt(req.query.quality) || 01)
-            .getBufferAsync(Jimp.MIME_PNG).then((resultingBuffer) => {
-              res.writeHead(200, { 'content-type': 'image/png' });
-              res.end(resultingBuffer);
-            });
-        });
-    });
+server.get('/screen', (req, res) => {
+  let capture = robot.screen.capture();
+  let pixels = capture.width * capture.height;
+  let uint8array = new Uint8ClampedArray(capture.image);
+  for(let i = 0; i < pixels; i++) {
+      let index = i * 4;
+      let blue = uint8array[ index + 0];
+      uint8array[ index + 0] = uint8array[ index + 2];
+      uint8array[ index + 2] = blue;
+  }
+  imageData = new ImageData(uint8array, capture.width, capture.height);
+  context.putImageData(imageData, 0,0);
+  canvas.createPNGStream().pipe(res);
 });
 
 server.get('/mouse', (req, res) => {
