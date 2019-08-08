@@ -29,10 +29,12 @@ var RemoteDesktop = (() => {
   }
 
   function mouseEvent(e) {
-    let offset = $(this).offset();
-    let x = (e.pageX - offset.left) / canvasSize.width;
-    let y = (e.pageY - offset.top) / canvasSize.height;
-    $.get( `/mouse?type=${e.type}&x=${x}&y=${y}`, function( _ ) {});
+    const offset = $(this).offset();
+    const x = (e.pageX - offset.left) / canvasSize.width;
+    const y = (e.pageY - offset.top) / canvasSize.height;
+    const type = e.type.substring(5);
+    const button = e.wich == 1 ? 'left' : 'right';
+    $.get( `/mouse?type=${type}&x=${x}&y=${y}&button=${button}`, function( _ ) {});
   }
 
   function setImageScale(value) {

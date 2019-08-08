@@ -18,14 +18,13 @@ server.get('/info', (req, res) => {
 });
 
 server.get('/mouse', (req, res) => {
-  const screenSize = robot.getScreenSize();
-  robot.moveMouse(
-    req.query.x * screenSize.width,
-    req.query.y * screenSize.height
-  );
-  if (req.query.type == 'mousedown' 
-  || req.query.type == 'mouseup') {
-    robot.mouseToggle(req.query.type.substring(5));
+  const x = req.query.x || 0;
+  const y = req.query.y || 0;
+  const type = req.query.type || 'down';
+  const button = req.query.button || 'right';
+  robot.moveMouse( x * screenSize.width, y * screenSize.height);
+  if (type == 'down' || type == 'up') {
+    robot.mouseToggle(type, button);
   }
   res.send({result:'success'});
 });
@@ -33,15 +32,16 @@ server.get('/mouse', (req, res) => {
 server.get('/screen', (req, res) => {
   let capture = robot.screen.capture();
   let pixels = capture.width * capture.height;
-  let uint8array = new Uint8ClampedArray(capture.image);
+  let rawdata = new Uint8ClampedArray(capture.image);
+  // convert from BGRA to RGBA
   for(let i = 0; i < pixels; i++) {
       let index = i * 4;
-      let blue = uint8array[ index + 0];
-      uint8array[ index + 0] = uint8array[ index + 2];
-      uint8array[ index + 2] = blue;
+      let blue = rawdata[index + 0];
+      rawdata[index + 0] = rawdata[ index + 2];
+      rawdata[index + 2] = blue;
   }
-  imageData = new ImageData(uint8array, capture.width, capture.height);
-  context.putImageData(imageData, 0,0);
+  imageData = new ImageData(rawdata, capture.width, capture.height);
+  context.putImageData(imageData, 0, 0);
   canvas.createPNGStream().pipe(res);
 });
 
