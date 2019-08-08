@@ -1,5 +1,5 @@
 const { createCanvas, ImageData } = require('canvas');
-const osversion = require('./os_version');
+const { osversion, bgra2rgba } = require('./misc');
 const express = require('express')
 const robot = require('robotjs');
 const os = require('os');
@@ -31,15 +31,8 @@ server.get('/mouse', (req, res) => {
 
 server.get('/screen', (req, res) => {
   let capture = robot.screen.capture();
-  let pixels = capture.width * capture.height;
   let rawdata = new Uint8ClampedArray(capture.image);
-  // convert from BGRA to RGBA
-  for(let i = 0; i < pixels; i++) {
-      let index = i * 4;
-      let blue = rawdata[index + 0];
-      rawdata[index + 0] = rawdata[ index + 2];
-      rawdata[index + 2] = blue;
-  }
+  bgra2rgba(rawdata, capture.width, capture.height);
   imageData = new ImageData(rawdata, capture.width, capture.height);
   context.putImageData(imageData, 0, 0);
   canvas.createPNGStream().pipe(res);
