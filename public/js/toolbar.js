@@ -6,6 +6,7 @@ const Toolbar = (() => {
 
     eventCallbacks["scaleChanged"] = () => { };
     eventCallbacks["keyCombination"] = () => { };
+    eventCallbacks["cropButtonClicked"] = () => { };
 
     $('.resolution-option').click( (e) => {
       $('#resolution-button').html(`Quality: ${$(e.target).html()}`);
@@ -31,6 +32,10 @@ const Toolbar = (() => {
         $('#generic-modal-body').html(`<b>Computer name: </b>${data.computerName}<br/><b>User name: </b>${data.userName}<br/><b>OS version: </b>${data.osVersion}`);
         $('#generic-modal').modal();
       });
+    });
+
+    $('#crop-button').click(()=>{
+      eventCallbacks["cropButtonClicked"]();
     });
   }
 

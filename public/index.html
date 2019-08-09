@@ -3,8 +3,7 @@
 
 <head>
   <title> Remote desktop in node.js</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel='stylesheet' href='./css/client.css' />
 </head>
 
@@ -26,8 +25,7 @@
         </div>
       </div>
       <div class="btn-group" role="group">
-        <button title="send key combination" id="send-combination" type="button" class="btn btn-primary"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button title="send key combination" id="send-combination" type="button" class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span class="glyphicon glyphicon-hand"></span>
         </button>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="send-combination">
@@ -36,10 +34,8 @@
           <a class="dropdown-item key-combination-option" href="#">Ctrl+V</a>
         </div>
       </div>
-      <button title="crop image" type="button" class="btn btn-primary"><span
-        class="glyphicon glyphicon-crop"></span></button>
-      <button title="Fullscreen" type="button" class="btn btn-primary"><span
-        class="glyphicon glyphicon-fullscreen"></span></button>
+      <button id="crop-button" title="crop image" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-crop"></span></button>
+      <button title="Fullscreen" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-fullscreen"></span></button>
     </div>
   </div>
 
@@ -65,12 +61,9 @@
 
   <!-- Scripts -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src='./js/crop_tool.js' type='text/javascript'></script>
   <script src="./js/toolbar.js" type="text/javascript"></script>
   <script src="./js/remote_desktop.js" type="text/javascript"></script>
   <script src="./js/application.js" type="text/javascript"></script>

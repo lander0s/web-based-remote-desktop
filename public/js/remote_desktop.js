@@ -15,6 +15,9 @@ var RemoteDesktop = (() => {
     $(canvas).mouseup(mouseEvent);
     $(canvas).mousemove(mouseEvent);
     updateImage();
+    Toolbar.on("cropButtonClicked", (value) => {
+      CropTool.open(canvas.getBoundingClientRect(), canvas.toDataURL(), null);
+    });
   }
 
   function resize() {
