@@ -23,7 +23,7 @@ var RemoteDesktop = (() => {
     EventBus.on('crop-button-clicked', () => {
       CropTool.open(canvas.getBoundingClientRect(), canvas.toDataURL());
     });
-    EventBus.on('user-selected-crop-area', (rect) => {
+    EventBus.on('crop-area-selected', (rect) => {
       console.log(`User selected the following area: ${JSON.stringify(rect)}`);
     });
   }
@@ -44,7 +44,7 @@ var RemoteDesktop = (() => {
     const x = (e.pageX - offset.left) / canvasSize.width;
     const y = (e.pageY - offset.top) / canvasSize.height;
     const type = e.type.substring(5);
-    const button = e.wich == 1 ? 'left' : 'right';
+    const button = e.originalEvent.which == 1 ? 'left' : 'right';
     $.get( `/mouse?type=${type}&x=${x}&y=${y}&button=${button}`, function( _ ) {});
   }
 

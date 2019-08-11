@@ -65,7 +65,7 @@ var CropTool = (() => {
     else if (e.type == 'mouseup') {
       isMouseDown = false;
       close();
-      EventBus.trigger('user-selected-crop-area', userSelectedRect);
+      EventBus.trigger('crop-area-selected', userSelectedRect);
     }
   }
 
