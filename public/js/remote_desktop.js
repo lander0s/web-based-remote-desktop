@@ -5,13 +5,19 @@ const RemoteDesktop = (() => {
   var canvas = null;
   var imageScale = "1.0";
   var canvasSize = { width: 0, height: 0 };
-  var cropArea = { left: 0.0, top: 0.0, width: 1.0, height: 1.0 };
+  var screenSize = { width: 0, height: 0 };
+  var cropArea = { left: 0, top: 0, width: 0, height: 0 };
 
   function init() {
     screenImg = new Image();
     canvas = document.createElement('canvas');
     $('body').prepend(canvas);
-    updateImage();
+    $.get( '/info', function( data ) {
+      screenSize = data.screenSize;
+      cropArea.width = screenSize.width;
+      cropArea.height = screenSize.height;
+      updateImage();
+    });
     addEventListeners();
   }
 
@@ -26,10 +32,10 @@ const RemoteDesktop = (() => {
     });
 
     EventBus.on('crop-area-selected', (rect) => {
-      cropArea.left = rect.left / canvasSize.width;
-      cropArea.top = rect.top / canvasSize.height;
-      cropArea.width = rect.width / canvasSize.width;
-      cropArea.height = rect.height / canvasSize.height;
+      cropArea.left = (rect.left / canvasSize.width) * screenSize.width;
+      cropArea.top = (rect.top / canvasSize.height) * screenSize.height;
+      cropArea.width = (rect.width / canvasSize.width) * screenSize.width;
+      cropArea.height = (rect.height / canvasSize.height) * screenSize.height;
     });
 
     EventBus.on('info-button-clicked', ()=> {
@@ -58,8 +64,8 @@ const RemoteDesktop = (() => {
 
   function mouseEvent(e) {
     const offset = $(this).offset();
-    const x = (e.pageX - offset.left) / canvasSize.width;
-    const y = (e.pageY - offset.top) / canvasSize.height;
+    const x = (((e.pageX - offset.left) / canvasSize.width) * cropArea.width) + cropArea.left;
+    const y = (((e.pageY - offset.top) / canvasSize.height) * cropArea.height) + cropArea.top;
     const type = e.type.substring(5);
     const button = e.originalEvent.which == 1 ? 'left' : 'right';
     $.get( `/mouse?type=${type}&x=${x}&y=${y}&button=${button}`, function( _ ) {});
