@@ -30,18 +30,17 @@ server.get('/mouse', (req, res) => {
 });
 
 server.get('/screen', (req, res) => {
-  let left = req.query.left || 0;
-  let top = req.query.top || 0;
-  let width = req.query.width || screenSize.width;
-  let height = req.query.height || screenSize.height;
-  let capture = robot.screen.capture(left, top, width, height);
+  const left = req.query.left || 0;
+  const top = req.query.top || 0;
+  const width = req.query.width || screenSize.width;
+  const height = req.query.height || screenSize.height;
+  const capture = robot.screen.capture(left, top, width, height);
   let rawdata = new Uint8ClampedArray(capture.image);
   bgra2rgba(rawdata, capture.width, capture.height);
   imageData = new ImageData(rawdata, capture.width, capture.height);
   canvas.width = capture.width;
   canvas.height = capture.height;
-  let context = canvas.getContext('2d');
-  context.putImageData(imageData, 0, 0);
+  canvas.getContext('2d').putImageData(imageData, 0, 0);
   canvas.createPNGStream().pipe(res);
 });
 
