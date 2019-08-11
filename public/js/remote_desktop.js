@@ -26,6 +26,9 @@ var RemoteDesktop = (() => {
     EventBus.on('crop-area-selected', (rect) => {
       console.log(`User selected the following area: ${JSON.stringify(rect)}`);
     });
+    EventBus.on('info-button-clicked', ()=> {
+      showSystemInfo();
+    });
   }
 
   function resize() {
@@ -37,6 +40,14 @@ var RemoteDesktop = (() => {
       canvasSize.width = window.innerHeight / ratio;
     }
     updateCanvasStyle();
+  }
+
+  function showSystemInfo() {
+    $.get( '/info', function( data ) {
+      $('#generic-modal-long-title').html('System information');
+      $('#generic-modal-body').html(`<b>Computer name: </b>${data.computerName}<br/><b>User name: </b>${data.userName}<br/><b>OS version: </b>${data.osVersion}`);
+      $('#generic-modal').modal();
+    });
   }
 
   function mouseEvent(e) {
