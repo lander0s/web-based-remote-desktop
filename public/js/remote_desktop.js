@@ -10,13 +10,21 @@ var RemoteDesktop = (() => {
     screenImg = new Image();
     canvas = document.createElement('canvas');
     $('body').prepend(canvas);
+    updateImage();
+    addEventListeners();
+  }
+
+  function addEventListeners() {
     $(window).resize(resize);
     $(canvas).mousedown(mouseEvent);
     $(canvas).mouseup(mouseEvent);
     $(canvas).mousemove(mouseEvent);
-    updateImage();
-    Toolbar.on("cropButtonClicked", (value) => {
-      CropTool.open(canvas.getBoundingClientRect(), canvas.toDataURL(), null);
+
+    EventBus.on('crop-button-clicked', () => {
+      CropTool.open(canvas.getBoundingClientRect(), canvas.toDataURL());
+    });
+    EventBus.on('user-selected-crop-area', (rect) => {
+      console.log(`User selected the following area: ${JSON.stringify(rect)}`);
     });
   }
 

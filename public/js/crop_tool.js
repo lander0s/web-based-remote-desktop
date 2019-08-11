@@ -6,13 +6,11 @@ var CropTool = (() => {
   var isMouseDown;
   var screenCapture;
   var isClosed;
-  var userCallback;
 
-  function open(inputRect, screenshotUrl,  callback) {
+  function open(inputRect, screenshotUrl) {
     userSelectedRect = { left: 0, top: 0, width: 0, height: 0 };
     isMouseDown = false;
     isClosed = false;
-    userCallback = callback || (() => {});
     screenCapture = new Image();
     screenCapture.src = screenshotUrl;
     canvas = document.createElement('canvas');
@@ -28,10 +26,14 @@ var CropTool = (() => {
     $(canvas).css('background-image', `url(${screenshotUrl}`);
     $(canvas).css('background-size', `${canvas.width}px ${canvas.height}px`);
     $(document.body).append(canvas);
+    addEventListeners();
+    draw();
+  }
+
+  function addEventListeners() {
     $(canvas).mousedown(mouseEvent);
     $(canvas).mousemove(mouseEvent);
     $(canvas).mouseup(mouseEvent);
-    draw();
   }
 
   function close() {
@@ -63,7 +65,7 @@ var CropTool = (() => {
     else if (e.type == 'mouseup') {
       isMouseDown = false;
       close();
-      userCallback(userSelectedRect);
+      EventBus.trigger('user-selected-crop-area', userSelectedRect);
     }
   }
 
