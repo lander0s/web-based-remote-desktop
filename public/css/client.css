@@ -45,6 +45,10 @@ body, html {
   height: 15px;
 }
 
+.glyphicon-crop.cancelable {
+  background-image: url(../img/close.png);
+}
+
 .glyphicon-info {
   background-image: url(../img/info.png);
   background-size : cover;

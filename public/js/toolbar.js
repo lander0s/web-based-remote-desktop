@@ -26,6 +26,14 @@ const Toolbar = (() => {
     $('.topbar').mouseleave(()=>{
       $('.topbar').css('top','-60px');
     });
+
+    EventBus.on('crop-tool-state-changed', (state)=> {
+      if(state == 'canceled') {
+        $('.glyphicon-crop').removeClass('cancelable');
+      } else {
+        $('.glyphicon-crop').addClass('cancelable');
+      }
+    });
   }
 
   return { init: init };

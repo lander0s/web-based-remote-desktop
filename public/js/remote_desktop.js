@@ -28,7 +28,12 @@ const RemoteDesktop = (() => {
     $(canvas).mousemove(mouseEvent);
 
     EventBus.on('crop-button-clicked', () => {
-      CropTool.open(canvas.getBoundingClientRect(), canvas.toDataURL());
+      if(CropTool.isOpen() || isCropped()) {
+        CropTool.cancel();
+        restoreFullImage();
+      } else {
+        CropTool.open(canvas.getBoundingClientRect(), canvas.toDataURL());
+      }
     });
 
     EventBus.on('crop-area-selected', (rect) => {
@@ -81,10 +86,6 @@ const RemoteDesktop = (() => {
     $(canvas).css('margin-left', `${-canvasSize.width / 2}px`);
   }
 
-  function setImageScale(value) {
-    imageScale = value;
-  }
-
   function updateImage() {
     const url = `./screen?scale=${imageScale}&left=${cropArea.left}&top=${cropArea.top}&width=${cropArea.width}&height=${cropArea.height}&time=${new Date().getTime()}`;
     screenImg.src = url;
@@ -98,8 +99,19 @@ const RemoteDesktop = (() => {
     };
   }
 
+  function isCropped() {
+    return cropArea.width != screenSize.width
+      ||  cropArea.height != screenSize.height;
+  }
+
+  function restoreFullImage() {
+    cropArea.left = 0;
+    cropArea.top = 0;
+    cropArea.width = screenSize.width;
+    cropArea.height = screenSize.height;
+  }
+
   return {
     init: init,
-    setImageScale: setImageScale
   };
 })();
