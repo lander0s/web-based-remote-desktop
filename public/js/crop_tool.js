@@ -1,5 +1,5 @@
 
-var CropTool = (() => {
+const CropTool = (() => {
   var canvas;
   var context;
   var userSelectedRect;

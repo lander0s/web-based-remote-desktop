@@ -1,10 +1,11 @@
 
-var RemoteDesktop = (() => {
+const RemoteDesktop = (() => {
 
   var screenImg = null;
   var canvas = null;
   var imageScale = "1.0";
   var canvasSize = { width: 0, height: 0 };
+  var cropArea = { left: 0.0, top: 0.0, width: 1.0, height: 1.0 };
 
   function init() {
     screenImg = new Image();
@@ -23,11 +24,24 @@ var RemoteDesktop = (() => {
     EventBus.on('crop-button-clicked', () => {
       CropTool.open(canvas.getBoundingClientRect(), canvas.toDataURL());
     });
+
     EventBus.on('crop-area-selected', (rect) => {
-      console.log(`User selected the following area: ${JSON.stringify(rect)}`);
+      cropArea.left = rect.left / canvasSize.width;
+      cropArea.top = rect.top / canvasSize.height;
+      cropArea.width = rect.width / canvasSize.width;
+      cropArea.height = rect.height / canvasSize.height;
     });
+
     EventBus.on('info-button-clicked', ()=> {
       showSystemInfo();
+    });
+  }
+
+  function showSystemInfo() {
+    $.get( '/info', function( data ) {
+      $('#generic-modal-long-title').html('System information');
+      $('#generic-modal-body').html(`<b>Computer name: </b>${data.computerName}<br/><b>User name: </b>${data.userName}<br/><b>OS version: </b>${data.osVersion}`);
+      $('#generic-modal').modal();
     });
   }
 
@@ -42,14 +56,6 @@ var RemoteDesktop = (() => {
     updateCanvasStyle();
   }
 
-  function showSystemInfo() {
-    $.get( '/info', function( data ) {
-      $('#generic-modal-long-title').html('System information');
-      $('#generic-modal-body').html(`<b>Computer name: </b>${data.computerName}<br/><b>User name: </b>${data.userName}<br/><b>OS version: </b>${data.osVersion}`);
-      $('#generic-modal').modal();
-    });
-  }
-
   function mouseEvent(e) {
     const offset = $(this).offset();
     const x = (e.pageX - offset.left) / canvasSize.width;
@@ -57,10 +63,6 @@ var RemoteDesktop = (() => {
     const type = e.type.substring(5);
     const button = e.originalEvent.which == 1 ? 'left' : 'right';
     $.get( `/mouse?type=${type}&x=${x}&y=${y}&button=${button}`, function( _ ) {});
-  }
-
-  function setImageScale(value) {
-    imageScale = value;
   }
 
   function updateCanvasStyle() {
@@ -73,8 +75,13 @@ var RemoteDesktop = (() => {
     $(canvas).css('margin-left', `${-canvasSize.width / 2}px`);
   }
 
+  function setImageScale(value) {
+    imageScale = value;
+  }
+
   function updateImage() {
-    screenImg.src = `./screen?scale=${imageScale}&time=${new Date().getTime()}`;
+    const url = `./screen?scale=${imageScale}&left=${cropArea.left}&top=${cropArea.top}&width=${cropArea.width}&height=${cropArea.height}&time=${new Date().getTime()}`;
+    screenImg.src = url;
     screenImg.onload = () => {
       canvas.width = screenImg.width;
       canvas.height = screenImg.height;

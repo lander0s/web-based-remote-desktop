@@ -1,6 +1,6 @@
 
 
-var Application = (() => {
+const Application = (() => {
   function init() {
     Toolbar.init();
     RemoteDesktop.init();
