@@ -5,7 +5,7 @@ const robot = require('robotjs');
 const expressws = require('express-ws');
 const os = require('os');
 
-const server     = express();expressws(server);
+const server     = express();
 const screenSize = robot.getScreenSize();
 const canvas     = createCanvas(screenSize.width, screenSize.height);
 
