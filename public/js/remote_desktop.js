@@ -3,12 +3,14 @@ const RemoteDesktop = (() => {
 
   var screenImg = null;
   var canvas = null;
+  var socket = null;
   var imageScale = "1.0";
   var canvasSize = { width: 0, height: 0 };
   var screenSize = { width: 0, height: 0 };
   var cropArea = { left: 0, top: 0, width: 0, height: 0 };
 
   function init() {
+    socket = new WebSocket(`${getWebSocketBaseUrl()}/input`);
     screenImg = new Image();
     canvas = document.createElement('canvas');
     $('body').prepend(canvas);
@@ -26,6 +28,14 @@ const RemoteDesktop = (() => {
     $(canvas).mousedown(mouseEvent);
     $(canvas).mouseup(mouseEvent);
     $(canvas).mousemove(mouseEvent);
+
+    socket.addEventListener('open', ()=>{
+      console.log('control connection established');
+    });
+
+    socket.addEventListener('message', ()=>{
+      console.log('server message received');
+    });
 
     EventBus.on('crop-button-clicked', () => {
       if(CropTool.isOpen() || isCropped()) {
@@ -69,11 +79,14 @@ const RemoteDesktop = (() => {
 
   function mouseEvent(e) {
     const offset = $(this).offset();
-    const x = (((e.pageX - offset.left) / canvasSize.width) * cropArea.width) + cropArea.left;
-    const y = (((e.pageY - offset.top) / canvasSize.height) * cropArea.height) + cropArea.top;
-    const type = e.type.substring(5);
-    const button = e.originalEvent.which == 1 ? 'left' : 'right';
-    $.get( `/mouse?type=${type}&x=${x}&y=${y}&button=${button}`, function( _ ) {});
+    const xInPixels = (((e.pageX - offset.left) / canvasSize.width) * cropArea.width) + cropArea.left;
+    const yInPixels = (((e.pageY - offset.top) / canvasSize.height) * cropArea.height) + cropArea.top;
+    socket.send(JSON.stringify({
+      type : e.type,
+      button : e.originalEvent.which == 1 ? 'left' : 'right',
+      x : xInPixels,
+      y : yInPixels,
+    }));
   }
 
   function updateCanvasStyle() {
@@ -109,6 +122,18 @@ const RemoteDesktop = (() => {
     cropArea.top = 0;
     cropArea.width = screenSize.width;
     cropArea.height = screenSize.height;
+  }
+
+  function getWebSocketBaseUrl() {
+    const loc = window.location;
+    let baseUrl;
+    if (loc.protocol === "https:") {
+        baseUrl = "wss:";
+    } else {
+        baseUrl = "ws:";
+    }
+    baseUrl += "//" + loc.host;
+    return baseUrl;
   }
 
   return {
