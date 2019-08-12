@@ -28,6 +28,8 @@ const RemoteDesktop = (() => {
     $(canvas).mousedown(mouseEvent);
     $(canvas).mouseup(mouseEvent);
     $(canvas).mousemove(mouseEvent);
+    $(window).keydown(keyboardEvent);
+    $(window).keyup(keyboardEvent);
 
     socket.addEventListener('open', ()=>{
       console.log('control connection established');
@@ -89,6 +91,15 @@ const RemoteDesktop = (() => {
     }));
   }
 
+  function keyboardEvent(e) {
+    e.originalEvent.preventDefault();
+    socket.send(JSON.stringify({
+      type : e.type,
+      key : key2Robot(e.originalEvent.key),
+      modifiers : getKeyModifiers(e),
+    }));
+  }
+
   function updateCanvasStyle() {
     $(canvas).css('position','absolute');
     $(canvas).css('background-color','pink');
@@ -134,6 +145,29 @@ const RemoteDesktop = (() => {
     }
     baseUrl += "//" + loc.host;
     return baseUrl;
+  }
+
+  function key2Robot(key) {
+    return key
+    .toLowerCase()
+    .replace('arrow','');
+  }
+
+  function getKeyModifiers(keyEvent) {
+    let modifiers = [];
+    if(keyEvent.originalEvent.altKey) {
+      modifiers.push('alt');
+    }
+    if(keyEvent.originalEvent.ctrlKey) {
+      modifiers.push('ctrl');
+    }
+    if(keyEvent.originalEvent.shiftKey) {
+      modifiers.push('shift');
+    }
+    if(keyEvent.originalEvent.metaKey) {
+      modifiers.push('command');
+    }
+    return modifiers;
   }
 
   return {

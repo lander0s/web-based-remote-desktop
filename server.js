@@ -48,6 +48,9 @@ server.ws('/input', function(ws, req) {
       robot.mouseToggle(upOrDown, event.button);
     } else if(event.type == 'mousemove') {
       robot.moveMouse( event.x , event.y );
+    } else if(event.type == 'keyup' || event.type == 'keydown') {
+      const upOrDown = event.type.substring(3);
+      robot.keyToggle(event.key, upOrDown, event.modifiers);
     }
   });
 });
