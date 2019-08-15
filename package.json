@@ -12,6 +12,6 @@
     "canvas": "^2.5.0",
     "express": "^4.17.1",
     "express-ws": "^4.0.0",
-    "robotjs": "^0.5.1"
+    "robotjs": "git+https://github.com/DavidLanderosAlcala/robotjs.git#fix-build"
   }
 }
