@@ -58,6 +58,10 @@ const RemoteDesktop = (() => {
     EventBus.on('info-button-clicked', ()=> {
       showSystemInfo();
     });
+
+    EventBus.on('scale-button-clicked', (scale)=> {
+      imageScale = scale;
+    });
   }
 
   function showSystemInfo() {
