@@ -8,6 +8,7 @@ const RemoteDesktop = (() => {
   var canvasSize = { width: 0, height: 0 };
   var screenSize = { width: 0, height: 0 };
   var cropArea = { left: 0, top: 0, width: 0, height: 0 };
+  var isFirstFrame = true;
 
   function init() {
     socket = new WebSocket(`${getWebSocketBaseUrl()}/input`);
@@ -84,6 +85,7 @@ const RemoteDesktop = (() => {
   }
 
   function mouseEvent(e) {
+    return;
     const offset = $(this).offset();
     const xInPixels = (((e.pageX - offset.left) / canvasSize.width) * cropArea.width) + cropArea.left;
     const yInPixels = (((e.pageY - offset.top) / canvasSize.height) * cropArea.height) + cropArea.top;
@@ -123,6 +125,10 @@ const RemoteDesktop = (() => {
       resize();
       let ctx = canvas.getContext('2d');
       ctx.drawImage(screenImg, 0, 0, canvas.width, canvas.height);
+      if(isFirstFrame) {
+        EventBus.trigger('first-frame-loaded');
+        isFirstFrame = false;
+      }
       updateImage();
     };
   }

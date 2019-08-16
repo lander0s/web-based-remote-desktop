@@ -1,5 +1,6 @@
 body, html {
-  background-color: black;
+  background-color: #34495e;
+  overflow: hidden;
 }
 
 .topbar {
