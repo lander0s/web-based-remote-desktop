@@ -1,71 +1,117 @@
+
 const { createCanvas, ImageData } = require('canvas');
-const { osversion, bgra2rgba } = require('./misc');
-const express = require('express')
-const robot = require('robotjs');
-const expressws = require('express-ws');
-const os = require('os');
+const express     = require('express')
+const robot       = require('robotjs');
+const expressws   = require('express-ws');
+const misc        = require('./misc');
+const os          = require('os');
+const SERVER_PORT = 8080;
 
-const httpPort   = 8080;
-const server     = express();
-const screenSize = robot.getScreenSize();
-const canvas     = createCanvas(screenSize.width, screenSize.height);
-const scaled     = createCanvas(screenSize.width, screenSize.height);
+const RemoteDesktopServer = (()=>{
 
-expressws(server);
-server.use(express.static('public'));
-listener = server.listen(httpPort, () => {
-  console.log(`Server listening on http://${os.hostname()}:${httpPort}`);
-});
+  const screenSize = robot.getScreenSize();
+  const server = express();
+  const canvas = createCanvas(screenSize.width, screenSize.height);
+  const scaledCanvas = createCanvas(screenSize.width, screenSize.height);
 
-server.get('/info', (req, res) => {
-  res.send({
-    computerName : os.hostname(),
-    userName     : os.userInfo().username,
-    osVersion    : osversion(),
-    screenSize   : screenSize,
-  });
-});
-
-server.get('/screen', (req, res) => {
-  try {
-    const scale = req.query.scale || 1.0;
-    const left = req.query.left || 0;
-    const top = req.query.top || 0;
-    const width = req.query.width || screenSize.width;
-    const height = req.query.height || screenSize.height;
-    const capture = robot.screen.capture(left|0, top|0, ((width / 16)|0)*16, height|0);
-    let rawdata = new Uint8ClampedArray(capture.image);
-    bgra2rgba(rawdata, capture.width, capture.height);
-    imageData = new ImageData(rawdata, capture.width, capture.height);
-    canvas.width = capture.width;
-    canvas.height = capture.height;
-    scaled.width = canvas.width * scale;
-    scaled.height = canvas.height * scale;
-    canvas.getContext('2d').putImageData(imageData, 0, 0);
-    scaled.getContext('2d').drawImage(canvas, 0, 0, scaled.width, scaled.height);
-    scaled.createPNGStream().pipe(res);
-  } catch(e) {
-    res.writeHead(500);
-    res.end('Internal server error');
+  function init() {
+    startService();
+    setupService();
   }
-});
 
-server.ws('/input', function(ws, req) {
-  ws.on('message', function(msg) {
-    try {
-      const event = JSON.parse(msg);
-      if(event.type == 'mouseup' || event.type == 'mousedown') {
-        const upOrDown = event.type.substring(5);
-        robot.moveMouse( event.x , event.y );
-        robot.mouseToggle(upOrDown, event.button);
-      } else if(event.type == 'mousemove') {
-        robot.moveMouse( event.x , event.y );
-      } else if(event.type == 'keyup' || event.type == 'keydown') {
-        const upOrDown = event.type.substring(3);
-        robot.keyToggle(event.key, upOrDown, event.modifiers);
-      }
-    } catch(e) { }
-  });
-});
+  function startService() {
+    expressws(server);
+    server.use(express.static('public'));
+    listener = server.listen(SERVER_PORT, () => {
+      console.log('Server listening on: ');
+      console.log(` - http://${os.hostname().replace('.local','')}:${SERVER_PORT}`);
+      misc.getIpv4AddressList().forEach((addr)=>{
+        console.log(` - http://${addr}:${SERVER_PORT}`);
+      });
+    });
+  }
 
+  function setupService() {
+    /* sanitize /screen params */
+    server.use( '/screen', (req, res, next) => {
+      req.query.scale  = parseFloat(req.query.scale) || 1.0;
+      req.query.left   = parseInt(req.query.left)    || 0;
+      req.query.top    = parseInt(req.query.top)     || 0;
+      req.query.width  = parseInt(req.query.width)   || screenSize.width;
+      req.query.height = parseInt(req.query.height)  || screenSize.height;
+      req.query.width -= req.query.width % 16;
+      next();
+    });
 
+    /* setup /screen controller */
+    server.get('/screen', (req, res) => {
+
+      const capture = robot.screen.capture(
+        req.query.left,
+        req.query.top,
+        req.query.width,
+        req.query.height
+      );
+
+      let rawdata = new Uint8ClampedArray(capture.image);
+      misc.bgra2rgba(
+        rawdata,
+        capture.width,
+        capture.height
+      );
+
+      imageData = new ImageData(
+        rawdata,
+        capture.width,
+        capture.height
+      );
+
+      canvas.width = capture.width;
+      canvas.height = capture.height;
+      scaledCanvas.width = canvas.width * req.query.scale;
+      scaledCanvas.height = canvas.height * req.query.scale;
+
+      canvas.getContext('2d').putImageData(imageData, 0, 0);
+      scaledCanvas.getContext('2d').drawImage(
+        canvas,
+        0,
+        0,
+        scaledCanvas.width,
+        scaledCanvas.height
+      );
+
+      scaledCanvas.createPNGStream().pipe(res);
+    });
+
+    server.get('/info', (req, res) => {
+      res.send({
+        computerName : os.hostname(),
+        userName     : os.userInfo().username,
+        osVersion    : misc.osversion(),
+        screenSize   : screenSize,
+      });
+    });
+
+    server.ws('/input', function(ws, req) {
+      ws.on('message', function(msg) {
+        try {
+          const event = JSON.parse(msg);
+          if(event.type == 'mouseup' || event.type == 'mousedown') {
+            const upOrDown = event.type.substring(5);
+            robot.moveMouse( event.x , event.y );
+            robot.mouseToggle(upOrDown, event.button);
+          } else if(event.type == 'mousemove') {
+            robot.moveMouse( event.x , event.y );
+          } else if(event.type == 'keyup' || event.type == 'keydown') {
+            const upOrDown = event.type.substring(3);
+            robot.keyToggle(event.key, upOrDown, event.modifiers);
+          }
+        } catch(e) { }
+      });
+    });
+  }
+
+  return { init : init };
+})();
+
+RemoteDesktopServer.init();
