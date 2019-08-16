@@ -1,19 +1,6 @@
 const os = require('os');
 
-module.exports = (()=>{
-
-  function getIpv4AddressList() {
-    let list = [];
-    let networkInterfaces = os.networkInterfaces();
-    for( let interface in networkInterfaces) {
-      networkInterfaces[interface].forEach((addr)=>{
-        if(addr.family == 'IPv4'){
-          list.push(addr.address);
-        }
-      });
-    }
-    return list;
-  }
+module.exports = (() => {
 
   function bgra2rgba(rawdata, width, height) {
     const pixels = width * height;
@@ -37,10 +24,9 @@ module.exports = (()=>{
     }
     return 'Unkown';
   }
-  
+
   return {
-    bgra2rgba : bgra2rgba,
-    osversion : osversion,
-    getIpv4AddressList : getIpv4AddressList,
+    bgra2rgba: bgra2rgba,
+    osversion: osversion,
   };
 })();

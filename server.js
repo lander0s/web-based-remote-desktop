@@ -1,13 +1,13 @@
 
 const { createCanvas, ImageData } = require('canvas');
-const express     = require('express')
-const robot       = require('robotjs');
-const expressws   = require('express-ws');
-const misc        = require('./misc');
-const os          = require('os');
+const express = require('express')
+const robot = require('robotjs');
+const expressws = require('express-ws');
+const misc = require('./misc');
+const os = require('os');
 const SERVER_PORT = 8080;
 
-const RemoteDesktopServer = (()=>{
+const RemoteDesktopServer = (() => {
 
   const screenSize = robot.getScreenSize();
   const server = express();
@@ -15,37 +15,29 @@ const RemoteDesktopServer = (()=>{
   const scaledCanvas = createCanvas(screenSize.width, screenSize.height);
 
   function init() {
-    startService();
-    setupService();
-  }
-
-  function startService() {
     expressws(server);
     server.use(express.static('public'));
     listener = server.listen(SERVER_PORT, () => {
       console.log('Server listening on: ');
-      console.log(` - http://${os.hostname().replace('.local','')}:${SERVER_PORT}`);
-      misc.getIpv4AddressList().forEach((addr)=>{
-        console.log(` - http://${addr}:${SERVER_PORT}`);
-      });
+      console.log(` - http://${os.hostname().replace('.local', '')}:${SERVER_PORT}`);
     });
+    setupService();
   }
 
   function setupService() {
     /* sanitize /screen params */
-    server.use( '/screen', (req, res, next) => {
-      req.query.scale  = parseFloat(req.query.scale) || 1.0;
-      req.query.left   = parseInt(req.query.left)    || 0;
-      req.query.top    = parseInt(req.query.top)     || 0;
-      req.query.width  = parseInt(req.query.width)   || screenSize.width;
-      req.query.height = parseInt(req.query.height)  || screenSize.height;
+    server.use('/screen', (req, res, next) => {
+      req.query.scale = parseFloat(req.query.scale) || 1.0;
+      req.query.left = parseInt(req.query.left) || 0;
+      req.query.top = parseInt(req.query.top) || 0;
+      req.query.width = parseInt(req.query.width) || screenSize.width;
+      req.query.height = parseInt(req.query.height) || screenSize.height;
       req.query.width -= req.query.width % 16;
       next();
     });
 
     /* setup /screen controller */
     server.get('/screen', (req, res) => {
-
       const capture = robot.screen.capture(
         req.query.left,
         req.query.top,
@@ -83,35 +75,37 @@ const RemoteDesktopServer = (()=>{
       scaledCanvas.createPNGStream().pipe(res);
     });
 
+    /* setup /info controller */
     server.get('/info', (req, res) => {
       res.send({
-        computerName : os.hostname(),
-        userName     : os.userInfo().username,
-        osVersion    : misc.osversion(),
-        screenSize   : screenSize,
+        computerName: os.hostname().replace('.local', ''),
+        userName: os.userInfo().username,
+        osVersion: misc.osversion(),
+        screenSize: screenSize,
       });
     });
 
-    server.ws('/input', function(ws, req) {
-      ws.on('message', function(msg) {
-        try {
-          const event = JSON.parse(msg);
-          if(event.type == 'mouseup' || event.type == 'mousedown') {
-            const upOrDown = event.type.substring(5);
-            robot.moveMouse( event.x , event.y );
-            robot.mouseToggle(upOrDown, event.button);
-          } else if(event.type == 'mousemove') {
-            robot.moveMouse( event.x , event.y );
-          } else if(event.type == 'keyup' || event.type == 'keydown') {
-            const upOrDown = event.type.substring(3);
-            robot.keyToggle(event.key, upOrDown, event.modifiers);
-          }
-        } catch(e) { }
+    /* setup /input controller using websockets */
+    server.ws('/input', (ws, req) => {
+      ws.on('message', (msg) => {
+        let event = JSON.parse(msg);
+        if (event.type == 'mouseup'
+          || event.type == 'mousedown') {
+          let upOrDown = event.type.substring(5);
+          robot.moveMouse(event.x, event.y);
+          robot.mouseToggle(upOrDown, event.button);
+        } else if (event.type == 'mousemove') {
+          robot.moveMouse(event.x, event.y);
+        } else if (event.type == 'keyup'
+          || event.type == 'keydown') {
+          let upOrDown = event.type.substring(3);
+          robot.keyToggle(event.key, upOrDown, event.modifiers);
+        }
       });
     });
   }
 
-  return { init : init };
+  return { init: init };
 })();
 
 RemoteDesktopServer.init();
