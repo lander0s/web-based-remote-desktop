@@ -5,6 +5,7 @@ const robot = require('robotjs');
 const expressws = require('express-ws');
 const os = require('os');
 
+const httpPort   = 8080;
 const server     = express();
 const screenSize = robot.getScreenSize();
 const canvas     = createCanvas(screenSize.width, screenSize.height);
@@ -12,8 +13,8 @@ const scaled     = createCanvas(screenSize.width, screenSize.height);
 
 expressws(server);
 server.use(express.static('public'));
-server.listen(8080, () => {
-  console.log('Server listening on http://127.0.0.1:8080');
+listener = server.listen(httpPort, () => {
+  console.log(`Server listening on http://${os.hostname()}:${httpPort}`);
 });
 
 server.get('/info', (req, res) => {
