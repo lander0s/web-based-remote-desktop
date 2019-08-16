@@ -4,7 +4,7 @@ const RemoteDesktop = (() => {
   var screenImg = null;
   var canvas = null;
   var socket = null;
-  var imageScale = "1.0";
+  var imageScale = "0.5";
   var canvasSize = { width: 0, height: 0 };
   var screenSize = { width: 0, height: 0 };
   var cropArea = { left: 0, top: 0, width: 0, height: 0 };
