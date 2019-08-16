@@ -46,17 +46,19 @@ server.get('/screen', (req, res) => {
 
 server.ws('/input', function(ws, req) {
   ws.on('message', function(msg) {
-    const event = JSON.parse(msg);
-    if(event.type == 'mouseup' || event.type == 'mousedown') {
-      const upOrDown = event.type.substring(5);
-      robot.moveMouse( event.x , event.y );
-      robot.mouseToggle(upOrDown, event.button);
-    } else if(event.type == 'mousemove') {
-      robot.moveMouse( event.x , event.y );
-    } else if(event.type == 'keyup' || event.type == 'keydown') {
-      const upOrDown = event.type.substring(3);
-      robot.keyToggle(event.key, upOrDown, event.modifiers);
-    }
+    try {
+      const event = JSON.parse(msg);
+      if(event.type == 'mouseup' || event.type == 'mousedown') {
+        const upOrDown = event.type.substring(5);
+        robot.moveMouse( event.x , event.y );
+        robot.mouseToggle(upOrDown, event.button);
+      } else if(event.type == 'mousemove') {
+        robot.moveMouse( event.x , event.y );
+      } else if(event.type == 'keyup' || event.type == 'keydown') {
+        const upOrDown = event.type.substring(3);
+        robot.keyToggle(event.key, upOrDown, event.modifiers);
+      }
+    } catch(e) { }
   });
 });
 
