@@ -99,7 +99,9 @@ const RemoteDesktopServer = (() => {
         } else if (event.type == 'keyup'
           || event.type == 'keydown') {
           let upOrDown = event.type.substring(3);
-          robot.keyToggle(event.key, upOrDown, event.modifiers);
+          try {
+            robot.keyToggle(event.key, upOrDown, event.modifiers);
+          } catch(_) { }
         }
       });
     });
