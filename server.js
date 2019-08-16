@@ -27,22 +27,27 @@ server.get('/info', (req, res) => {
 });
 
 server.get('/screen', (req, res) => {
-  const scale = req.query.scale || 1.0;
-  const left = req.query.left || 0;
-  const top = req.query.top || 0;
-  const width = req.query.width || screenSize.width;
-  const height = req.query.height || screenSize.height;
-  const capture = robot.screen.capture(left|0, top|0, ((width / 16)|0)*16, height|0);
-  let rawdata = new Uint8ClampedArray(capture.image);
-  bgra2rgba(rawdata, capture.width, capture.height);
-  imageData = new ImageData(rawdata, capture.width, capture.height);
-  canvas.width = capture.width;
-  canvas.height = capture.height;
-  scaled.width = canvas.width * scale;
-  scaled.height = canvas.height * scale;
-  canvas.getContext('2d').putImageData(imageData, 0, 0);
-  scaled.getContext('2d').drawImage(canvas, 0, 0, scaled.width, scaled.height);
-  scaled.createPNGStream().pipe(res);
+  try {
+    const scale = req.query.scale || 1.0;
+    const left = req.query.left || 0;
+    const top = req.query.top || 0;
+    const width = req.query.width || screenSize.width;
+    const height = req.query.height || screenSize.height;
+    const capture = robot.screen.capture(left|0, top|0, ((width / 16)|0)*16, height|0);
+    let rawdata = new Uint8ClampedArray(capture.image);
+    bgra2rgba(rawdata, capture.width, capture.height);
+    imageData = new ImageData(rawdata, capture.width, capture.height);
+    canvas.width = capture.width;
+    canvas.height = capture.height;
+    scaled.width = canvas.width * scale;
+    scaled.height = canvas.height * scale;
+    canvas.getContext('2d').putImageData(imageData, 0, 0);
+    scaled.getContext('2d').drawImage(canvas, 0, 0, scaled.width, scaled.height);
+    scaled.createPNGStream().pipe(res);
+  } catch(e) {
+    res.writeHead(500);
+    res.end('Internal server error');
+  }
 });
 
 server.ws('/input', function(ws, req) {
