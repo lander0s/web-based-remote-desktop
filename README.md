@@ -38,6 +38,9 @@ npm start
 - Crop image
 - Get system info
 
+## Notice
+This tool is way far from being complete, it has bugs and sometimes it's a little laggy. what is on my roadmap at the moment is reducing latency by implementing "real" video streaming.
+
 ## License
 
 MIT
