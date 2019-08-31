@@ -1,4 +1,4 @@
-<p align="center"><h2>Web-based remote desktop</h2></p>
+<p align="center" style=''> <b> Web-based remote desktop</b> </p>
 
 > Access your remote desktop using any modern web-browser
 ##### Supported platforms:
