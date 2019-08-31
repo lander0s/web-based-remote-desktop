@@ -44,3 +44,14 @@ This tool is way far from being complete, it has bugs and sometimes it's a littl
 ## License
 
 MIT
+
+## Credits
+This tool uses:
+- express    https://expressjs.com/es/
+- express-ws (websockets middleware for express)        https://github.com/HenningM/express-ws
+- robotjs (automation tool for simulating input events) https://github.com/octalmage/robotjs
+- canvas (A server-side canvas implementation)          https://github.com/Automattic/node-canvas
+- boostrap                                              https://getbootstrap.com/
+- jquery                                                https://jquery.com/
+## Author
+David Landeros <dh.landeros08@gmail.com>
