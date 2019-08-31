@@ -1,6 +1,9 @@
 <p align="center" style=''> <b> Web-based remote desktop</b> </p>
 
 > Access your remote desktop using any modern web-browser
+
+<p align="center"><img src="https://user-images.githubusercontent.com/5791055/64057520-e61e1a00-cb52-11e9-946c-a6d839fa0f52.gif" width="500"></p>
+
 ##### Supported platforms:
 - Windows
 - Linux
@@ -34,4 +37,3 @@ npm start
 - Crop image
 - Get system info
 
-<p align="center"><img src="https://user-images.githubusercontent.com/5791055/64057520-e61e1a00-cb52-11e9-946c-a6d839fa0f52.gif" width="500"></p>
