@@ -11,11 +11,11 @@
 
 ## Installation
 ```
-git clone https://github.com/DavidLanderosAlcala/remote-desktop-over-http.git
+git clone https://github.com/DavidLanderosAlcala/web-based-remote-desktop.git
 ```
 
 ```
-cd remote-desktop-over-http
+cd web-based-remote-desktop
 ```
 ```
 npm install
