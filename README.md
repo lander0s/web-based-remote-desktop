@@ -1,4 +1,4 @@
-<p align="center" style=''> <b> Web-based remote desktop</b> </p>
+## Web-based remote desktop
 
 > Access your remote desktop using any modern web-browser
 
@@ -20,6 +20,7 @@ cd remote-desktop-over-http
 ```
 npm install
 ```
+> on Linux you have to install: __libxtst-dev__ and __libpng++-dev__ before running ```npm install```
 
 ##### Usage
 > On the computer you want to access remotely
