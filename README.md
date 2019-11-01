@@ -47,11 +47,11 @@ MIT
 
 ## Credits
 This tool uses:
-- express    https://expressjs.com/es/
-- express-ws (websockets middleware for express)        https://github.com/HenningM/express-ws
-- robotjs (automation tool for simulating input events) https://github.com/octalmage/robotjs
-- canvas (A server-side canvas implementation)          https://github.com/Automattic/node-canvas
-- boostrap                                              https://getbootstrap.com/
-- jquery                                                https://jquery.com/
+- [express](https://expressjs.com/) - minimalist web framework for Node.js
+- [express-ws](https://github.com/HenningM/express-ws) - websockets middleware for express
+- [robotjs](https://github.com/octalmage/robotjs) - automation tool for simulating input events
+- [canvas](https://github.com/Automattic/node-canvas) - A server-side canvas implementation
+- [boostrap](https://getbootstrap.com/)
+- [jquery](https://jquery.com/)
 ## Author
 David Landeros <dh.landeros08@gmail.com>
